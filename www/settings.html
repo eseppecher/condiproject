@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" /><title>Hello World</title>
+
+<!-- ========================= STYLE ========================= -->          
+<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="css/minerale.css" />
+  
+<style>
+.container{
+   	text-align: left; 
+  }
+  
+    #map-canvas {
+	left: 25%;
+    height: 50%;
+    width: 50%;
+    background-color: transparent;
+  }
+  
+  .form-control {
+    width: auto;
+     }
+     
+  .form-group{
+  display: inline-block;
+    width: auto;
+  }   
+ .form-inline{
+    display: inline-block;
+    width: auto;
+
+  }
+ 
+  
+</style>
+
+</head>
+    <body>
+      		
+  <!-- ========================= HTML ========================= -->   		
+      		 
+
+     	
+      
+      		
+  <div id="main" class="container"> 
+  	
+  	<center> <button type="submit" id="submeat" class="btn btn-condi btn-lg" onclick="window.location.href = 'index.html';"> Retour </button>  </center> <br>
+  	
+  </div>
+
+<div id="map-canvas" class="map-canvas"> </div>
+
+  <!-- ========================= JAVASCRIPT ========================= -->
+  		
+<script type="text/javascript" src="cordova.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=visualization&sensor=false"></script>
+<script type="text/javascript" charset="utf-8">    
+    
+    var name, latC,longC, zoomC, nameD, latD, longD, zoomD;
+    
+    document.addEventListener("deviceready", onDeviceReady, false);
+    
+  function onDeviceReady() {
+  
+	 var db = window.openDatabase("condiDB", "1.0", "CondiDB", 1000000);
+	 var query = "SELECT * FROM config" ;
+     db.transaction(function (tz){ tz.executeSql(query, [], retreiveConfig, onError )});        
+  }
+   function onError(){alert("error");}
+  
+  function retreiveConfig(tx, results) { 
+  	name = results.rows.item(0).name;
+  	latC = results.rows.item(0).latitude; latD = results.rows.item(0).latitude;
+    longC = results.rows.item(0).longitude; longD = results.rows.item(0).longitude;
+    zoomC = results.rows.item(0).zoom; zoomD = results.rows.item(0).zoom;
+    loadPage();
+  }
+    
+    
+    function loadPage(){
+    	var element = document.getElementById('main');
+	   element.innerHTML += ' <div id="pseudo"> <b> Pseudo : </b>  '+ name + ' <button type="button" class="btn btn-default navbar-btn" onclick="edit(2)"> <span class="glyphicon glyphicon-pencil"></span> </button>  </div> ' +
+  	   '<b> Carte : </b> centre et zoom <button type="button" class="btn btn-default navbar-btn" onclick="edit(3)"> <span class="glyphicon glyphicon-pencil"></span> </button> <br>' + 
+  	   '<div id="mapSettings"> </div>';
+    }
+
+    function edit(x){
+    	
+    	// EDITING PSEUDO
+    	if(x==2){
+    		document.getElementById('pseudo').innerHTML += '<form class="form-inline" role="form" name="myform" action="javascript:void(0);">' +
+  	         '<div class="form-group"> <input class="form-control" id="name" name="name" value="' + name + '">' +
+    	     '<button type="submit" class="btn btn-success" onclick="edit(2.1)">Sauvegarder</button>' +
+  			 '</div> </form>';
+    	}
+    	
+    	if(x==2.1){
+    		nameD = document.myform.name.value;
+    		var db = window.openDatabase("condiDB", "1.0", "CondiDB", 1000000);
+        	db.transaction(saveName, onError, edit(2.2));  
+		}
+		if(x==2.2){
+			document.getElementById('pseudo').innerHTML = '<b> Pseudo : </b>  '+ nameD ;
+		}
+    	
+    	// EDITING MAP CONFIGURATION
+    	if(x==3){
+    		var element = document.getElementById('mapSettings');
+    		element.innerHTML +=  '<button type="submit" id="submeat" class="btn btn-success btn-lg" onclick="edit(3.1)"> Sauvegarder </button>';
+    
+    
+	   		//element.innerHTML += '<div id="map-canvas" class="map-canvas"> </div>'   ; //MAP OPTIONS
+    
+    	var mapOptions = {
+       		zoom:zoomC,
+       		center: new google.maps.LatLng(latC, longC),
+       		mapTypeIds: [google.maps.MapTypeId.ROADMAP, 'map_style'],
+       		panControl: false,
+       		zoomControl: false,
+       		mapTypeControl: false,
+       		scaleControl: false,
+       		streetViewControl: false,
+       		overviewMapControl: false
+    	};
+	
+    	map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);;
+    	}
+    	
+    	//SAVING MAP
+    	if(x==3.1){
+    		
+    		latD = map.getCenter().lat();
+    		longD = map.getCenter().lng();
+    		zoomD = map.getZoom();
+    		
+        	var db = window.openDatabase("condiDB", "1.0", "CondiDB", 1000000);
+        	db.transaction(saveMap, onError, edit(3.2));  
+    	}
+    	
+    	//CLEANING MAP
+    	if(x==3.2){
+    		document.getElementById('mapSettings').innerHTML = "";
+    		document.getElementById('map-canvas').innerHTML = "";
+    	}
+    }
+    
+    	function saveMap(tx){
+
+    		var queryA = 'UPDATE config SET latitude=' + latD + ' WHERE name="'+ name + '"' ;
+    		var queryB = 'UPDATE config SET longitude=' + longD + ' WHERE name="'+ name + '"' ;
+    		var queryC = 'UPDATE config SET zoom=' + zoomD + ' WHERE name="'+ name + '"' ;
+    		
+			tx.executeSql(queryA);
+			tx.executeSql(queryB);
+			tx.executeSql(queryC);
+		}
+		
+		function saveName(ty){
+    		var query = 'UPDATE config SET name="' + nameD + '" WHERE name="'+ name + '"' ;
+			ty.executeSql(query);
+		}
+		
+		function onSuccess(){
+			alert("super success");
+			
+		}
+    
+</script>
+
+</body>
+</html>
