@@ -3,26 +3,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  
 var name = "";
-document.addEventListener("deviceready", onDeviceReady, false);
-    
-function onDeviceReady() {
-	var db = window.openDatabase("condiDB", "1.0", "CondiDB", 1000000);
-    var query = "SELECT name FROM sqlite_master WHERE type='table' AND name='config'" ;
-    db.transaction(function (tz){ tz.executeSql(query, [], onSuccess, onError )});    
-}
 
 function onError() {alert("error");}
    
-function onSuccess(tx, results) {
-
-//ATTENTION//////////////////////////
-	// pour tester l'initialization inverser la condition suvante
-
-	if(results.rows.length!==1){
-		initialize();	
-	} 
-}
-		
 function initialize() {
 	var element = document.getElementById('overlay');
 	element.innerHTML += '<form role="form" class="initialize" name="myform" action="javascript:void(0);">'+ 
@@ -30,7 +13,7 @@ function initialize() {
 		'<br> <h3>Adopte un pseudo :</h3> <div class="form-group">  <input type="text" class="form-control" name="name" placeholder="..." required> </div>' +
 		"<br> <button type='submit' id='submeat' class='btn btn-condi btn-lg' onclick='configure()'> Decouvre l'APP </button>";
 	var elt = document.getElementById('design');
-	elt.innerHTML = "#overlay {z-index: 10; color: #FEFEFE; position: fixed; width: 100%; height: 100%; text-align: center; background-color: rgba(206, 206, 206, 0.8);}";
+	elt.innerHTML = "#overlay {z-index: 10; color: #FEFEFE; position: fixed; width: 100%; height: 100%; text-align: center; background-color: rgba(206, 206, 206, 1);}";
 }
 	
 function configure(myform){		
@@ -55,10 +38,14 @@ function prefill(){
 	db.transaction(fillConfig, onError, Success);
 }
 
-function fillConfig(tx) { tx.executeSql('INSERT INTO config (name, latitude, longitude, zoom) VALUES ("' + name + '",'+ 44.932953 + ',' + 4.897759 + ',' + 5 + ')'); }
+function fillConfig(tx) { 
+	tx.executeSql('INSERT INTO config (name, latitude, longitude, zoom) VALUES ("' + name + '",'+ 44.932953 + ',' + 4.897759 + ',' + 5 + ')'); 
+	}
 	
 function Success(){
-
-	window.location.href = "demo.html";
+     var init = 1;
+     var requete= "init='" + init + "'; " ;  
+     requete = escape(requete);
+     window.location.href = "index.html?" + requete; 
 
 }

@@ -48,10 +48,36 @@
   </div>
 
 
+  <!-- ========================= MODALS ========================= -->   
+
+<div id="condition-needed" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">  <div class="modal-content">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin:7px 10px;">&times;</button>
+         <div class="modal-body">
+        	<br> <h4> <p>Tu ne nous as pas dit comment sont les conditions?</p> </h4> <br>
+            <center> <img data-dismiss="modal" onclick="setConditions('sunny')" hspace="20px" width="80px" src="img/sun.png">
+        	<img data-dismiss="modal" onclick="setConditions('cloudy')" width="80px" src="img/cloud.png"> </center>
+      </div>
+	</div></div>
+</div>
+
+<div id="gps-waiting" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">  <div class="modal-content">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin:7px 10px;">&times;</button>
+         <div class="modal-body">
+        	<br> <h4> <p>Un peu de patience le GPS ne t'a pas encore localise. </p> </h4> <br>
+        	<center> <button data-dismiss="modal" class="btn btn-condi btn-lg"> OK </button> </center>	
+
+      </div>
+	</div></div>
+</div>
 
   <!-- ========================= JAVASCRIPT ========================= -->
   		
 <script type="text/javascript" src="cordova.js"></script>
+<script src="js/jquery.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+<script type="text/javascript" src="js/bootstrap-modal.js"></script>
 <script src="js/ygps2.js"></script>
 
 <script type="text/javascript" charset="utf-8">
@@ -67,14 +93,21 @@
   }
   
   function retreiveName(tx, results) { name = results.rows.item(0).name;}
-    
+  
+  function setConditions(x){ // IN CASE OF  FORGETTING
+    var elements = document.getElementsByName('weather');
+    if(x=='sunny'){ elements[0].checked = true; }
+    else{ elements[1].checked = true; }
+  	retreive();
+  }
+  
   function retreive() {
   	 if((!myform.weather[0].checked)&&(!myform.weather[1].checked)){
-  	 	alert("Tu ne nous as pas dit comment sont les conditions.");
+  	    $("#condition-needed").modal('show');
   	 }
   	 else{
 	  	 if(CurrentAccuracy >= 100){
-	  	 	    alert("Un peu de patience, le GPS ne t'a pas encore trouvé.");
+	  	        $("#gps-waiting").modal('show');
 	            gpsTriger();
 	  	 }
 	  	 else{

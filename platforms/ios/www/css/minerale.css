@@ -178,8 +178,20 @@
 @media (max-width: 900px) {
   #header {
   	top: 10px;
-  	font-size: 40px;
+  	font-size: 50px;
   }
+  
+    /*! switch buttons section METEO/ICI */
+  #switch {
+    z-index: 5;
+    position: fixed;
+    width: 600px;
+    left: 50%;
+    top: 85%;
+    margin-left: -300px;
+    text-align: center;
+  }
+  
     .btn-lh {
     padding: 10px 15px;
     width: 200px;
@@ -215,6 +227,17 @@
    #header {
    	top: 10px;
    	font-size: 24px;
+  }
+  
+    /*! switch buttons section METEO/ICI */
+  #switch {
+    z-index: 5;
+    position: fixed;
+    width: 300px;
+    left: 50%;
+    top: 85%;
+    margin-left: -150px;
+    text-align: center;
   }
   
     .btn-lh {

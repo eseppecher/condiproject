@@ -47,7 +47,7 @@ function configure(myform){
 	
 function createConfig(tx) {
 	tx.executeSql('DROP TABLE IF EXISTS config');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS config (name varchar(255))');
+	tx.executeSql('CREATE TABLE IF NOT EXISTS config (name varchar(255), latitude float, longitude float, zoom int(3))');
 }
     
 function prefill(){
@@ -55,7 +55,7 @@ function prefill(){
 	db.transaction(fillConfig, onError, Success);
 }
 
-function fillConfig(tx) { tx.executeSql('INSERT INTO config (name) VALUES ("' + name + '")'); }
+function fillConfig(tx) { tx.executeSql('INSERT INTO config (name, latitude, longitude, zoom) VALUES ("' + name + '",'+ 44.932953 + ',' + 4.897759 + ',' + 5 + ')'); }
 	
 function Success(){
 

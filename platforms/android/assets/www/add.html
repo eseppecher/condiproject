@@ -72,6 +72,16 @@
 	</div></div>
 </div>
 
+<div id="demo" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">  <div class="modal-content">
+         <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin:7px 10px;">&times;</button>
+         <div class="modal-body">
+        	<br> <h4> <p> Partages les conditions de ta falaise en 30s.</p> </h4> <br>
+        	<center> <button data-dismiss="modal" class="btn btn-condi btn-lg"onclick="endDemo()"> Go! </button> </center>	
+      </div>
+	</div></div>
+</div>
+
   <!-- ========================= JAVASCRIPT ========================= -->
   		
 <script type="text/javascript" src="cordova.js"></script>
@@ -89,8 +99,16 @@
 	 gpsTriger();
 	 var db = window.openDatabase("condiDB", "1.0", "CondiDB", 1000000);
 	 var query = "SELECT * FROM config" ;
-     db.transaction(function (tz){ tz.executeSql(query, [], retreiveName, onError )});        
+     db.transaction(function (tz){ tz.executeSql(query, [], retreiveName, onError )}); 
+
+	var init = 0; var requete = window.location.search; if(requete){ requete = requete.substring(1); requete = unescape(requete); eval(requete);} 
+	
+	if(init==1){ $("#demo").modal('show');}
   }
+  
+    function endDemo() {
+    	window.location.href = "index.html";
+    }
   
   function retreiveName(tx, results) { name = results.rows.item(0).name;}
   
@@ -129,8 +147,8 @@
      
      ajaxRequest.onreadystatechange = function () {    
          if(ajaxRequest.readyState==4 && ajaxRequest.status==201) {
-             alert("Partage reussi!"); // A REMPLACER PAR UN MODAL
-             window.location.href = "index.html";
+                 var init = 2; var requete= "init='" + init + "'; " ;  
+     			requete = escape(requete); window.location.href = "index.html?" + requete; 
          }
      }
            

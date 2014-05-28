@@ -115,29 +115,13 @@
 
 <script type="text/javascript" charset="utf-8">    
     
-    var jMarkers, synchro = 0;
+
     
-    document.addEventListener("deviceready", getDatas, false);
+
     
-    function getDatas(){
-    	requestSettings();
-    	var ajaxQuery = new XMLHttpRequest();
-    	ajaxQuery.onreadystatechange = function () {
-    		if(ajaxQuery.readyState==4 && ajaxQuery.status==200){
-    			jMarkers = JSON.parse(ajaxQuery.responseText); //Traduction de la réponse en JSON 
-    			synchronize(2);                   
-            }
-        }	
-     	var queryString = "http://mineral.herokuapp.com/conditions";
-     	ajaxQuery.open("GET", queryString, false);
-     	ajaxQuery.send(null);
-    }
-    
-    function requestSettings(){
-    	var db = window.openDatabase("condiDB", "1.0", "CondiDB", 1000000);
-     	var query = "SELECT * FROM config" ;
-     	db.transaction(function (tz){ tz.executeSql(query, [], getSettings, onError )});
-    }
+
+    go();
+
     
 
     
@@ -146,23 +130,20 @@
     }
     
     
-    function getSettings(tx, results){
-        var latC = results.rows.item(0).latitude;
-        var longC = results.rows.item(0).longitude;
-        var zoomC = results.rows.item(0).zoom;
+    function go(){
     
     var styles = [
   		{
     		featureType: "all",
     		stylers: [
-		      { saturation: -30 }
+		      { saturation: 0 }
     		]
   		},{
     		featureType: "road.arterial",
     		elementType: "geometry",
     		stylers: [
       		{ hue: "#00ffee" },
-      		{ saturation: 30 }
+      		{ saturation: 0 }
     		]
   		},{
     		featureType: "poi.business",
@@ -177,8 +158,8 @@
 
     //MAP OPTIONS
     var mapOptions = {
-       zoom:zoomC,
-       center: new google.maps.LatLng(latC, longC),
+       zoom:10,
+       center: new google.maps.LatLng(43.091757, 6.044639),
        mapTypeIds: [google.maps.MapTypeId.ROADMAP, 'map_style'],
        panControl: false,
        zoomControl: false,
@@ -194,17 +175,12 @@
 	map.mapTypes.set('map_style', styledMap);
 	map.setMapTypeId('map_style');
 	
-	synchronize(3);
+	displayMarkers();
     }
     
-    function synchronize(x){
-    	synchro = synchro + x;
-    	if(synchro == 5){
-    		displayMarkers(jMarkers);
-    	}
-    }
+
     
-	function displayMarkers(json){
+	function displayMarkers(){
 		var sunny = {
     		url: 'img/sunny.png',
     		// This marker is 20 pixels wide by 32 pixels tall.
@@ -213,7 +189,7 @@
     		//origin: new google.maps.Point(0,-10),
     		// The anchor for this image is the base of the flagpole at 0,32.
     		anchor: new google.maps.Point(20, 50),
-    		anchorPoint: new google.maps.Point(0, -20)
+    		anchorPoint: new google.maps.Point(0, 0)
   		};
 
    		var cloudy = {
@@ -223,32 +199,30 @@
     		// The origin for this image is 0,0.
     		//origin: new google.maps.Point(0,-10),
     		// The anchor for this image is the base of the flagpole at 0,32.
-    		anchor: new google.maps.Point(20, 50)
+    		anchor: new google.maps.Point(20, 50),
+    		anchorPoint: new google.maps.Point(-50, 0)
   		};
-        var d = new Date();
-        var today = d.getTime(); 
-        var obso = 0;
-        
 
-		for (var i = 0; i < json.length; i++){
-   
-   			if(json[i].weather=="sunny"){ 
-   				var marker = new google.maps.Marker({ position: new google.maps.LatLng(json[i].location.latitude, json[i].location.longitude), map: map, clickable: true, icon: sunny, title: "Weather"});
-   			}
-	   		else{
-	    		var marker = new google.maps.Marker({ position: new google.maps.LatLng(json[i].location.latitude, json[i].location.longitude), map: map, clickable: true, icon: cloudy, title: "Weather"});
-	    	}
-           
-            obso = timeDiff(today,json[i].created); 
-	    	
-	    	marker.content = '<b> ' + json[i].name + ',</b><i> il y a ' + obso + '</i>: <p> "' + json[i].message + '"</p>';
+        
+        var markerr = new google.maps.Marker({ position: new google.maps.LatLng(43.148893, 5.883278),  map: map, clickable: true, icon: cloudy, title: "Weather"});
+
+    	markerr.content = '<b> boby ,</b><i> il y a 1 jour </i>: <p> Enorme! </p>';
+	    
+	    	var infoWindow = new google.maps.InfoWindow();    
+			google.maps.event.addListener(markerr, 'click', function () {
+                infoWindow.setContent(this.content);
+                infoWindow.open(this.getMap(), this);
+	    	});
+	   
+	    var marker = new google.maps.Marker({ position: new google.maps.LatLng(43.144885, 6.068672), map: map, clickable: true, icon: sunny, title: "Weather"});	
+
+    	marker.content = '<b> boby ,</b><i> il y a 1 jour </i>: <p> Enorme! </p>';
 	    
 	    	var infoWindow = new google.maps.InfoWindow();    
 			google.maps.event.addListener(marker, 'click', function () {
                 infoWindow.setContent(this.content);
                 infoWindow.open(this.getMap(), this);
 	    	});
-    	} 
  	}
 </script>
 

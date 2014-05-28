@@ -35,6 +35,7 @@
   .navbar-default{
   	background: #eee;
     height: 20px;
+    z-index: 8;
   }
   
   
@@ -45,6 +46,8 @@
   .navbar-btn{
   	float: right;
   }
+  
+
 </style> 
 
 <!-- div to implement design in case of initialization -->
@@ -53,16 +56,6 @@
 </head>      
     <body>
     	
-<!-- ========================= Modals CURRENTLY UNUSED========================= -->
-    	 
-  <div class="modal fade" id="welcomeModal">
-  	<div class="modal-dialog">
-    	<div class="modal-content">
-        <h4> Bonjour, " + name + ", bienvenu dans la communaute de Condition Minerales!!!</h4>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Decouvrir l'application</button>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
     	
 <!-- ========================= HTML ========================= -->
     	
@@ -77,7 +70,6 @@
   </div>
 </nav>
 
-	
 	<div id="header">  Condi Grimpe </div>
 	
 	<div id='overlay'> </div>
@@ -93,19 +85,35 @@
 		<input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="1" data-slider-max="15" data-slider-step="1" data-slider-value="3"/>
 	</div>
 	
-	<div id="map-canvas" class="map-canvas"> </div>
-			    
+	<div id="map-canvas" class="map-canvas"> ... <br> <br> <br> <br> <br> <h4 align="center">  Chargement de la carte....  </h4> </div>
+			 
+			 
+	<!-- ========================= MODALS ========================= -->
+    	 
+<div id="demo" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">  <div class="modal-content">
+         <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin:7px 10px;">&times;</button>
+         <div class="modal-body">
+        	<br> <h4> <p>La carte te permet de decouvirir les conditions partagees par la communaute.</p> </h4> <br>
+        	<center> <button data-dismiss="modal" class="btn btn-condi btn-lg"onclick="continueDemo()"> Suivant </button> </center>	
+      </div>
+	</div></div>
+</div>
+
+<div id="share-success" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">  <div class="modal-content panel-success">
+         <div class="modal-header panel-heading"> <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin:7px 10px;">&times;</button> <h4 class="modal-title"> Partage reussi!</h4> </div>
+	</div></div>
+</div>
+
 
 <!-- ========================= JAVASCRIPT ========================= -->
 <script type="text/javascript" src="cordova.js"></script>
-<!-- <script type="text/javascript" src="js/bootstrap.js"></script> -->
-<!-- <script type="text/javascript" src="js/bootstrap-modal.js"></script> -->
 
 <script type="text/javascript" src="js/yinitialize.js"></script>
-<script type="text/javascript" src="js/condition.js"></script>
-<!--  <script type="text/javascript" src="js/jquery.js"></script> 
+<script type="text/javascript" src="js/condition.js"></script> 
 <script type="text/javascript" src="js/bootstrap-slider.js"></script>
-
+<!--
 <script type="text/javascript" charset="utf-8">
          $('#ex1').slider({ formater: function(value) { return  value + 'jours';}});
 </script> -->
@@ -117,7 +125,35 @@
     
     var jMarkers, synchro = 0;
     
-    document.addEventListener("deviceready", getDatas, false);
+    document.addEventListener("deviceready", onDeviceReady, false);
+    
+    function onDeviceReady() {
+	     var db = window.openDatabase("condiDB", "1.0", "CondiDB", 1000000);
+         var query = "SELECT name FROM sqlite_master WHERE type='table' AND name='config'" ;
+         db.transaction(function (tz){ tz.executeSql(query, [], kickOff, onError );});    
+    }
+
+  
+	function kickOff(tx, results) {
+		if(results.rows.length!==1){ initialize();} 
+		else{
+			getDatas();
+			var init = 0;
+        	var requete = window.location.search; 
+         	if(requete){ requete = requete.substring(1); requete = unescape(requete); eval(requete);} 
+        	
+        	if(init==1){ $("#demo").modal('show');} //Mode demonstration
+        	if(init==2){$("#share-success").modal('show');} //Partage reussi
+		}
+	}
+    
+    function continueDemo() {
+     var init = 1;
+     var requete= "init='" + init + "'; " ;  
+     requete = escape(requete);
+     window.location.href = "add.html?" + requete; 
+    }
+    
     
     function getDatas(){
     	requestSettings();
@@ -251,6 +287,8 @@
     	} 
  	}
 </script>
-
+<script src="js/jquery.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+<script type="text/javascript" src="js/bootstrap-modal.js"></script>
 </body>
 </html>

@@ -21,7 +21,6 @@
 /Users/etienne/Workspace/CondiGrimpeProject/platforms/android/assets/www/cordova.js \
 /Users/etienne/Workspace/CondiGrimpeProject/platforms/android/assets/www/cordova_plugins.js \
 /Users/etienne/Workspace/CondiGrimpeProject/platforms/android/assets/www/css \
-/Users/etienne/Workspace/CondiGrimpeProject/platforms/android/assets/www/demo.html \
 /Users/etienne/Workspace/CondiGrimpeProject/platforms/android/assets/www/fonts \
 /Users/etienne/Workspace/CondiGrimpeProject/platforms/android/assets/www/img \
 /Users/etienne/Workspace/CondiGrimpeProject/platforms/android/assets/www/index.html \
@@ -45,8 +44,6 @@
 /Users/etienne/Workspace/CondiGrimpeProject/platforms/android/assets/www/img/glyphicons-halflings-white.png \
 /Users/etienne/Workspace/CondiGrimpeProject/platforms/android/assets/www/img/glyphicons-halflings.png \
 /Users/etienne/Workspace/CondiGrimpeProject/platforms/android/assets/www/img/intro.png \
-/Users/etienne/Workspace/CondiGrimpeProject/platforms/android/assets/www/img/show1.jpg \
-/Users/etienne/Workspace/CondiGrimpeProject/platforms/android/assets/www/img/show2.jpg \
 /Users/etienne/Workspace/CondiGrimpeProject/platforms/android/assets/www/img/sun.png \
 /Users/etienne/Workspace/CondiGrimpeProject/platforms/android/assets/www/img/sunny.png \
 /Users/etienne/Workspace/CondiGrimpeProject/platforms/android/assets/www/js/bootstrap-modal.js \
